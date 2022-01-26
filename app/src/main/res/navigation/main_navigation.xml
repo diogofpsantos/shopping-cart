@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/nav_home"
+    android:id="@+id/main_navigation">
+
+    <fragment
+        android:id="@+id/nav_home"
+        tools:layout="@layout/fragment_home"
+        android:name="com.hostel.shoppingcart.ui.HomeFragment"
+        android:label="Shopping Cart">
+        <action
+            android:id="@+id/action_checkout"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:destination="@id/checkoutFragment" />
+    </fragment>
+
+    <fragment
+        android:label="Checkout"
+        tools:layout="@layout/fragment_checkout"
+        android:name="com.hostel.shoppingcart.ui.CheckoutFragment"
+        android:id="@+id/checkoutFragment">
+
+        <action
+            android:id="@+id/navigate_checkout_to_home"
+            app:destination="@id/nav_home"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/nav_home"
+            app:popUpToInclusive="true">
+        </action>
+    </fragment>
+</navigation>
