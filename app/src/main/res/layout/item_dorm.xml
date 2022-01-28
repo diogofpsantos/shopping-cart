@@ -8,6 +8,10 @@
         <variable
             name="cartItem"
             type="com.hostel.shoppingcart.data.model.CartItem" />
+
+        <variable
+            name="currencyFormat"
+            type="java.text.NumberFormat" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -87,6 +91,17 @@
                     android:background="@drawable/custom_btn_add"
                     android:enabled="@{cartItem.dorm.bedsAvailable>cartItem.quantity}" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/price_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@{String.format(@string/price_format_bed,currencyFormat.format(cartItem.dorm.price))}"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toTopOf="@id/available_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="6€" />
 
             <TextView
                 android:id="@+id/available_tv"

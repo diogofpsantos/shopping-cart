@@ -2,13 +2,13 @@ package com.hostel.shoppingcart.ui.home
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,13 +53,18 @@ class HomeFragment : Fragment() {
                     binding.group1.visibility = View.VISIBLE
                     binding.loadingLayout.visibility = View.GONE
                     cartItemList = mainViewModel.cartItems.value
-                    val cartItemsAdapter = CartItemsAdapter()
+                    val cartItemsAdapter = CartItemsAdapter(clickListener = {
+                        mainViewModel.cartItems.postValue(mainViewModel.cartItems.value)
+                    })
                     cartItemList?.let { it1 -> cartItemsAdapter.submitList(it1) }
                     binding.itemsRv.adapter = cartItemsAdapter
                 } else {
                     binding.group1.visibility = View.GONE
                     binding.loadingLayout.visibility = View.VISIBLE
                 }
+            })
+            mainViewModel.totalPrice.observe(viewLifecycleOwner, {
+                Log.d("TotalPrice", "Price: $it")
             })
             checkout_btn.setOnClickListener { findNavController().navigate(HomeFragmentDirections.actionCheckout()) }
         }

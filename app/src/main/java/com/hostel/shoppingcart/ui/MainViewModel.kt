@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hostel.shoppingcart.data.model.CartItem
 import com.hostel.shoppingcart.data.repositories.DormsRepository
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.kotlin.subscribeBy
 import kotlinx.coroutines.launch
+import java.lang.RuntimeException
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
@@ -15,8 +17,6 @@ class MainViewModel @Inject constructor(
     val cartItems = MutableLiveData<MutableList<CartItem>>()
     val loading = MutableLiveData(true)
     val totalPrice = MutableLiveData<Double>()
-
-    val subscriptions = CompositeDisposable()
 
     init {
         getCartItemsList()
@@ -55,16 +55,38 @@ class MainViewModel @Inject constructor(
     }
 
     private fun updateTotalPrice(items: List<CartItem>) {
-        if (items.isNotEmpty()) {
-            var price = 0.0
-            items.forEach {
-                price += it.dorm.price * it.quantity
+        //RxJava
+        var price = 0.0
+        Observable.create<CartItem> { emitter ->
+            if (items.isNotEmpty()) {
+                items.forEach {
+                    emitter.onNext(it)
+                }
+                emitter.onComplete()
+            } else {
+                emitter.onError(RuntimeException("error"))
             }
-            var quantityCart = 0
-            items.forEach { quantityCart += it.quantity }
-            totalPrice.value = price
-            totalPrice.postValue(totalPrice.value)
-        } else
-            totalPrice.postValue(MutableLiveData<Double>().value)
+        }.subscribeBy(
+            onNext = { price += it.dorm.price * it.quantity },
+            onComplete = {
+                totalPrice.value = price
+                totalPrice.postValue(totalPrice.value)
+            },
+            onError = {
+                println(it)
+                totalPrice.postValue(MutableLiveData<Double>().value)
+            }
+        )
+//        if (items.isNotEmpty()) {
+//            var price = 0.0
+//            items.forEach {
+//                price += it.dorm.price * it.quantity
+//            }
+//            var quantityCart = 0
+//            items.forEach { quantityCart += it.quantity }
+//            totalPrice.value = price
+//            totalPrice.postValue(totalPrice.value)
+//        } else
+//            totalPrice.postValue(MutableLiveData<Double>().value)
     }
 }
