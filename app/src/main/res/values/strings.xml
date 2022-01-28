@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Shopping Cart</string>
+    <string name="beds_available">%d beds available</string>
+    <string name="go_to_checkout">Go to checkout</string>
 </resources>

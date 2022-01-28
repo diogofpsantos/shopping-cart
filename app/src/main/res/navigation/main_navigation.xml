@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/nav_home"
         tools:layout="@layout/fragment_home"
-        android:name="com.hostel.shoppingcart.ui.HomeFragment"
+        android:name="com.hostel.shoppingcart.ui.home.HomeFragment"
         android:label="Shopping Cart">
         <action
             android:id="@+id/action_checkout"

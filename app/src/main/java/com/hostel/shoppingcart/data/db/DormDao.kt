@@ -1,10 +1,12 @@
 package com.hostel.shoppingcart.data.db
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.hostel.shoppingcart.data.model.Dorm
 
+@Dao
 interface DormDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

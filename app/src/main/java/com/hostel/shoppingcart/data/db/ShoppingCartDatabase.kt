@@ -5,5 +5,6 @@ import androidx.room.RoomDatabase
 import com.hostel.shoppingcart.data.model.Dorm
 
 @Database(entities = [Dorm::class], version = 1)
-abstract class ShoppingCartDatabase :RoomDatabase() {
+abstract class ShoppingCartDatabase : RoomDatabase() {
+    abstract fun dormDao(): DormDao
 }

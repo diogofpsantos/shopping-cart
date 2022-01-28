@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.hostel.shoppingcart.R
 import com.hostel.shoppingcart.ShoppingCartApplication
 import com.hostel.shoppingcart.databinding.ActivityHomeBinding
