@@ -10,4 +10,10 @@
     <color name="card_backg">#F44336</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="grey_disabled">#808F9BB3</color>
+    <color name="basic_800">#0E0B44</color>
+    <color name="basic_700">#41487E</color>
+    <color name="basic_600">#969CBB</color>
+    <color name="basic_300">#EBEDF3</color>
+    <color name="basic_200">#F5F6FB</color>
+    <color name="white_transparent">#66FFFFFF</color>
 </resources>

@@ -1,27 +1,183 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="price"
+            type="Double" />
+
+        <variable
+            name="beds"
+            type="String" />
+
+        <variable
+            name="currencyFormat"
+            type="java.text.NumberFormat" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/hello_tv"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:text="Checkout"/>
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toTopOf="@id/pay_btn"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="23dp">
+
+                <TextView
+                    android:id="@+id/saleSummaryTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:minHeight="24dp"
+                    android:text="@string/sale_summary"
+                    android:textAllCaps="false"
+                    android:textColor="@color/basic_600" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cartItemsCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:animateLayoutChanges="true"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:minHeight="57dp"
+                            android:orientation="horizontal"
+                            android:paddingStart="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/items"
+                                android:textAllCaps="true"
+                                android:textColor="@color/basic_800" />
+
+                            <TextView
+                                android:id="@+id/tickets_tv"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:paddingEnd="16dp"
+                                android:text="@{String.format(@string/total_beds_format,beds)}"
+                                android:textColor="@color/basic_800"
+                                tools:text="(02)" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/itemsSep"
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:background="@color/basic_300" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/items_rv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:nestedScrollingEnabled="false"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="16dp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:itemCount="3"
+                            tools:listitem="@layout/item_cart" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/containerToPay"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="56dp">
+
+                            <TextView
+                                android:id="@+id/toPayTV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:text="@string/to_pay"
+                                android:textAllCaps="true"
+                                android:textColor="@color/basic_800"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/price_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:layout_marginEnd="16dp"
+                                android:text="@{currencyFormat.format(price)}"
+                                android:textColor="@color/basic_800"
+                                app:layout_constraintBaseline_toBaselineOf="@id/toPayTV"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                tools:text="30,40€" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
 
         <Button
+            android:id="@+id/pay_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Back"
-            app:layout_constraintTop_toBottomOf="@id/hello_tv"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="@color/teal_700"
+            android:text="@string/pay"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/back_btn"
-            android:layout_marginTop="12dp"/>
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/loading_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white_transparent"
+            android:clickable="true"
+            android:elevation="10dp"
+            android:focusable="true"
+            android:visibility="visible">
+
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="pay_btn, scroll_view"
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -22,7 +22,7 @@
     <fragment
         android:label="Checkout"
         tools:layout="@layout/fragment_checkout"
-        android:name="com.hostel.shoppingcart.ui.CheckoutFragment"
+        android:name="com.hostel.shoppingcart.ui.checkout.CheckoutFragment"
         android:id="@+id/checkoutFragment">
 
         <action

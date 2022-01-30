@@ -12,8 +12,8 @@ class DormsRepository @Inject constructor(
 
     suspend fun getDorms(): List<Dorm> {
         var dorms = db.dormDao().getAllDorms()
-        /*If database is empty I manually insert the dorms
-        * This should ask server for the available dorms and update database
+        /* If database is empty I manually insert the dorms
+        *  This should ask server for the available dorms and update database
         * */
 
         if (dorms.isEmpty() || dorms.size != 3) {

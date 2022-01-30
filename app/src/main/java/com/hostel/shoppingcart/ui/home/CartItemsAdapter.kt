@@ -2,15 +2,21 @@ package com.hostel.shoppingcart.ui.home
 
 import com.hostel.shoppingcart.R
 import com.hostel.shoppingcart.data.model.CartItem
+import com.hostel.shoppingcart.data.model.Dorm
+import com.hostel.shoppingcart.data.model.DormItem
 import com.hostel.shoppingcart.databinding.ItemDormBinding
 import com.hostel.shoppingcart.ui.base.BaseAdapter
 import java.text.NumberFormat
 import java.util.*
 
-class CartItemsAdapter(private val clickListener: () -> Unit) : BaseAdapter<CartItem, ItemDormBinding>(R.layout.item_dorm) {
+class CartItemsAdapter(private val optionsListener: OptionsListener) : BaseAdapter<DormItem, ItemDormBinding>(R.layout.item_dorm) {
 
-    override fun bind(binding: ItemDormBinding, item: CartItem, position: Int) {
-        binding.cartItem = item
+    interface OptionsListener{
+        fun addToCart(item: Dorm)
+        fun removeFromCart(item: Dorm)
+    }
+    override fun bind(binding: ItemDormBinding, item: DormItem, position: Int) {
+        binding.dorm = item
         val currencyFormat = NumberFormat.getCurrencyInstance()
         currencyFormat.currency = Currency.getInstance("USD")
         binding.currencyFormat = currencyFormat
@@ -18,14 +24,14 @@ class CartItemsAdapter(private val clickListener: () -> Unit) : BaseAdapter<Cart
             if (item.quantity > 0) {
                 item.quantity--
                 notifyItemChanged(position)
-                clickListener.invoke()
+                optionsListener.removeFromCart(item.dorm)
             }
         }
         binding.addBtnLayout.setOnClickListener {
             if (item.quantity < item.dorm.bedsAvailable) {
                 item.quantity++
                 notifyItemChanged(position)
-                clickListener.invoke()
+                optionsListener.addToCart(item.dorm)
             }
         }
     }

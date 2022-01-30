@@ -12,8 +12,8 @@ data class Dorm(
     @SerializedName("name") val name: String,
     @SerializedName("beds") val beds: Int,
     @SerializedName("bedsAvailable") val bedsAvailable: Int,
-    @SerializedName("price") val price: Double
-):Parcelable {
+    @SerializedName("price") val price: Double,
+) : Parcelable {
     @PrimaryKey(autoGenerate = true)
     var id: Long? = null
 }
