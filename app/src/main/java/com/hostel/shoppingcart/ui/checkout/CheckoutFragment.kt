@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -50,37 +52,74 @@ class CheckoutFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding?.let { binding ->
             binding.payBtn.setOnClickListener {
+                mainViewModel.pay()
                 findNavController().navigate(
                     CheckoutFragmentDirections.navigateCheckoutToHome()
                 )
             }
             mainViewModel.getCurrencies()
             mainViewModel.loading.observe(viewLifecycleOwner) {
-                binding.price = mainViewModel.totalPrice.value
-                binding.beds = if (mainViewModel.totalBeds.value!! > 9)
-                    (mainViewModel.totalBeds.value.toString()) else String.format(
-                    "0%d",
-                    mainViewModel.totalBeds.value
-                )
-                val currencyFormat = NumberFormat.getCurrencyInstance()
-                currencyFormat.currency = Currency.getInstance(mainViewModel.getDefaultCurrency())
-                binding.currencyFormat = currencyFormat
                 if (!it) {
                     binding.group1.visibility = View.VISIBLE
                     binding.loadingLayout.visibility = View.GONE
-                    cartItemList = mainViewModel.cartItems.value
-                    cartItemList?.let { it1 -> cartItemsAdapter.submitList(it1) }
                     binding.itemsRv.adapter = cartItemsAdapter
                 } else {
                     binding.group1.visibility = View.GONE
                     binding.loadingLayout.visibility = View.VISIBLE
                 }
+
+                binding.currencySpinner.adapter = ArrayAdapter(
+                    requireContext(),
+                    R.layout.item_spinner,
+                    mainViewModel.getCurrenciesForSpinner()
+                )
+                binding.currencySpinner.setSelection(mainViewModel.getActualCurrencyIndex())
+                binding.currencySpinner.onItemSelectedListener =
+                    object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            position: Int,
+                            id: Long
+                        ) {
+                            if (mainViewModel.currencySelected.value!!.currency != mainViewModel.currencies[position].currency)
+                                mainViewModel.currencySelected.postValue(mainViewModel.currencies[position])
+                        }
+
+                        override fun onNothingSelected(parent: AdapterView<*>?) {
+                        }
+
+                    }
+                updateLayout()
             }
-            mainViewModel.errorEvent.observe(viewLifecycleOwner){
+            mainViewModel.currencySelected.observe(viewLifecycleOwner) {
+                mainViewModel.updateCartCurrencies()
+            }
+            mainViewModel.totalPrice.observe(viewLifecycleOwner) {
+                updateLayout()
+            }
+            mainViewModel.errorEvent.observe(viewLifecycleOwner) {
                 binding.showInfoDialog(it.message, clickListener = {
 
-                } )
+                })
             }
+        }
+    }
+
+    private fun updateLayout() {
+        binding?.let { binding ->
+            binding.price = mainViewModel.totalPrice.value
+            binding.beds = if (mainViewModel.totalBeds.value!! > 9)
+                (mainViewModel.totalBeds.value.toString()) else String.format(
+                "0%d",
+                mainViewModel.totalBeds.value
+            )
+            val currencyFormat = NumberFormat.getCurrencyInstance()
+            currencyFormat.currency =
+                Currency.getInstance(mainViewModel.currencySelected.value!!.currency)
+            binding.currencyFormat = currencyFormat
+            cartItemList = mainViewModel.cartItems.value
+            cartItemList?.let { it1 -> cartItemsAdapter.submitList(it1) }
         }
     }
 

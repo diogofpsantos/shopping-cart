@@ -17,6 +17,10 @@
             type="Double" />
 
         <variable
+            name="conversion"
+            type="Double" />
+
+        <variable
             name="currencyFormat"
             type="java.text.NumberFormat" />
     </data>
@@ -79,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:minHeight="24dp"
-                android:text="@{String.format(@string/price_format_bed,currencyFormat.format(price))}"
+                android:text="@{currencyFormat.format(price*conversion)}"
                 android:textColor="@color/basic_700"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -1,6 +1,5 @@
 package com.hostel.shoppingcart.ui
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,8 +30,10 @@ class MainViewModel @Inject constructor(
     val totalBeds = MutableLiveData<Int>()
     val dorms = ArrayList<DormItem>()
     var currencies = ArrayList<CurrencyConversion>()
+    val currencySelected = MutableLiveData<CurrencyConversion>()
 
     init {
+        currencySelected.postValue(CurrencyConversion(getDefaultCurrency()!!, 1.0))
         getDormItemsList()
         cartItems.observeForever(::updateTotalPrice)
     }
@@ -56,7 +57,11 @@ class MainViewModel @Inject constructor(
         if (found != null) {
             found.quantity++
         } else {
-            currentList.add(CartItem(dorm = dorm, quantity = 1))
+            currentList.add(
+                CartItem(
+                    dorm = dorm, quantity = 1, currencySelected.value!!
+                )
+            )
         }
         cartItems.value = currentList
     }
@@ -72,8 +77,28 @@ class MainViewModel @Inject constructor(
         cartItems.value = currentList
     }
 
-    fun clearCart() {
+    fun pay() {
         cartItems.value = mutableListOf()
+        currencySelected.value = CurrencyConversion(getDefaultCurrency()!!, 1.0)
+        dorms.forEach{
+            it.quantity =0
+        }
+    }
+
+    fun getCurrenciesForSpinner(): ArrayList<String> {
+        val spinnerItems = ArrayList<String>()
+        currencies.forEach {
+            spinnerItems.add(it.currency)
+        }
+        return spinnerItems
+    }
+
+    fun updateCartCurrencies() {
+        val currentList = cartItems.value ?: mutableListOf()
+        currentList.forEach {
+            it.conversion = currencySelected.value!!
+        }
+        cartItems.value = currentList
     }
 
     private fun updateTotalPrice(items: List<CartItem>) {
@@ -91,7 +116,7 @@ class MainViewModel @Inject constructor(
             }
         }.subscribeBy(
             onNext = {
-                price += it.dorm.price * it.quantity
+                price += it.dorm.price * it.quantity * it.conversion.conversion
                 quantity += it.quantity
             },
             onComplete = {
@@ -124,11 +149,36 @@ class MainViewModel @Inject constructor(
         when (val result = checkoutRepository.getCurrencies()) {
             is Result.Success -> {
                 currencies = result.data
+                if (currencySelected.value != null) {
+                    for (index in 0 until currencies.size) {
+                        val c = currencies[index]
+                        if (c.currency.equals(currencySelected.value!!.currency, true)) {
+                            currencySelected.postValue(c)
+                            break
+                        }
+                    }
+                } else {
+                    currencySelected.postValue(CurrencyConversion(getDefaultCurrency()!!, 1.0))
+                }
                 loading.postValue(false)
             }
             is Result.Error -> {
+                val currenciesList = ArrayList<CurrencyConversion>()
+                val currency = CurrencyConversion("USD", 1.0)
+                currenciesList.add(currency)
+                currencies = currenciesList
+                currencySelected.postValue(currency)
                 errorEvent.postValue(result.exception)
+                loading.postValue(false)
             }
         }
+    }
+
+    fun getActualCurrencyIndex(): Int {
+        for (index in 0 until currencies.size) {
+            if (currencies[index].currency == currencySelected.value!!.currency)
+                return index
+        }
+        return 0
     }
 }

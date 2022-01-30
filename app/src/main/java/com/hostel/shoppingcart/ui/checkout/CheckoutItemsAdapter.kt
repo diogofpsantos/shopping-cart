@@ -12,8 +12,9 @@ class CheckoutItemsAdapter : BaseAdapter<CartItem, ItemCartBinding>(R.layout.ite
         binding.price = item.dorm.price
         binding.number = item.quantity
         val format = NumberFormat.getCurrencyInstance()
-        format.currency = Currency.getInstance(item.currency)
+        format.currency = Currency.getInstance(item.conversion.currency)
         binding.currencyFormat = format
         binding.name = item.dorm.name
+        binding.conversion = item.conversion.conversion
     }
 }

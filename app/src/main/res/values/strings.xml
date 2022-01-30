@@ -11,4 +11,5 @@
     <string name="total_beds_format">(%s)</string>
     <string name="yes">Yes</string>
     <string name="ok">Ok</string>
+    <string name="currency">Currency</string>
 </resources>
