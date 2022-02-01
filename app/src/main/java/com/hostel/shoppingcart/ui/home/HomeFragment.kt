@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hostel.shoppingcart.R
-import com.hostel.shoppingcart.data.model.CartItem
 import com.hostel.shoppingcart.data.model.Dorm
 import com.hostel.shoppingcart.databinding.FragmentHomeBinding
 import com.hostel.shoppingcart.ui.MainActivity

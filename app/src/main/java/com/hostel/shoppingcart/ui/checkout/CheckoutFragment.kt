@@ -1,7 +1,9 @@
 package com.hostel.shoppingcart.ui.checkout
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +16,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.hostel.shoppingcart.R
 import com.hostel.shoppingcart.data.model.CartItem
+import com.hostel.shoppingcart.data.model.NetworkStatsResponse
 import com.hostel.shoppingcart.databinding.FragmentCheckoutBinding
 import com.hostel.shoppingcart.ui.MainActivity
 import com.hostel.shoppingcart.ui.MainViewModel
 import com.hostel.shoppingcart.utils.extensions.showInfoDialog
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -99,8 +105,8 @@ class CheckoutFragment : Fragment() {
                 updateLayout()
             }
             mainViewModel.errorEvent.observe(viewLifecycleOwner) {
+                mainViewModel.updateStats(it.stats)
                 binding.showInfoDialog(it.message, clickListener = {
-
                 })
             }
         }
@@ -123,8 +129,29 @@ class CheckoutFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        EventBus.getDefault().unregister(this)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         binding = null
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    fun onNewIntent(intent: Intent?) {
+        if (intent != null) {
+            val networkStatsResponse = NetworkStatsResponse.parseIntent(intent)
+            Log.d("TAG", "onNewIntent: " + networkStatsResponse.action)
+            mainViewModel.updateStats(networkStatsResponse)
+        }
+        EventBus.getDefault().removeStickyEvent(intent)
+    }
+
 }

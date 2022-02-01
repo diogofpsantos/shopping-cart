@@ -4,9 +4,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import android.view.View
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.hostel.shoppingcart.data.model.NetworkStatsResponse
 import com.hostel.shoppingcart.utils.LocalisedException
 import com.hostel.shoppingcart.utils.NoInternetException
 import com.hostel.shoppingcart.utils.SomethingWentWrongException
@@ -40,8 +39,11 @@ val Exception?.localizedException: LocalisedException
         return when (this) {
             is LocalisedException -> this
             is IOException -> NoInternetException(
-                message
+                message, NetworkStatsResponse(100, "test", "test", false)
             )
-            else -> SomethingWentWrongException(this?.localizedMessage)
+            else -> SomethingWentWrongException(
+                this?.localizedMessage,
+                NetworkStatsResponse(100, "test", "test", false)
+            )
         }
     }

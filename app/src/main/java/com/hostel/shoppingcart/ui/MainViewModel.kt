@@ -4,12 +4,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hostel.shoppingcart.data.Preferences
-import com.hostel.shoppingcart.data.model.CartItem
-import com.hostel.shoppingcart.data.model.CurrencyConversion
-import com.hostel.shoppingcart.data.model.Dorm
-import com.hostel.shoppingcart.data.model.DormItem
+import com.hostel.shoppingcart.data.model.*
 import com.hostel.shoppingcart.data.repositories.CheckoutRepository
 import com.hostel.shoppingcart.data.repositories.DormsRepository
+import com.hostel.shoppingcart.data.repositories.StatsRepository
 import com.hostel.shoppingcart.utils.LocalisedException
 import com.hostel.shoppingcart.utils.Result
 import com.hostel.shoppingcart.utils.SingleLiveEvent
@@ -21,6 +19,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val dormsRepository: DormsRepository,
     private val checkoutRepository: CheckoutRepository,
+    private val statsRepository: StatsRepository,
     private val preferences: Preferences
 ) : ViewModel() {
     val cartItems = MutableLiveData<MutableList<CartItem>>()
@@ -43,11 +42,6 @@ class MainViewModel @Inject constructor(
         dormsRepository.getDorms().forEach {
             dorms.add(DormItem(it, 0, getDefaultCurrency()!!))
         }
-//        val items = mutableListOf<CartItem>()
-//        dormsRepository.getDorms().forEach {
-//            items.add(CartItem(it, 0))
-//        }
-//        cartItems.postValue(items)
         loading.postValue(false)
     }
 
@@ -78,10 +72,13 @@ class MainViewModel @Inject constructor(
     }
 
     fun pay() {
-        cartItems.value = mutableListOf()
-        currencySelected.value = CurrencyConversion(getDefaultCurrency()!!, 1.0)
-        dorms.forEach{
-            it.quantity =0
+        viewModelScope.launch {
+            //Here should call api to confirm payment
+            cartItems.value = mutableListOf()
+            currencySelected.value = CurrencyConversion(getDefaultCurrency()!!, 1.0)
+            dorms.forEach {
+                it.quantity = 0
+            }
         }
     }
 
@@ -129,17 +126,6 @@ class MainViewModel @Inject constructor(
                 totalBeds.postValue(0)
             }
         )
-//        if (items.isNotEmpty()) {
-//            var price = 0.0
-//            items.forEach {
-//                price += it.dorm.price * it.quantity
-//            }
-//            var quantityCart = 0
-//            items.forEach { quantityCart += it.quantity }
-//            totalPrice.value = price
-//            totalPrice.postValue(totalPrice.value)
-//        } else
-//            totalPrice.postValue(MutableLiveData<Double>().value)
     }
 
     fun getDefaultCurrency() = preferences.defaultCurrency
@@ -180,5 +166,21 @@ class MainViewModel @Inject constructor(
                 return index
         }
         return 0
+    }
+
+    fun updateStats(networkStatsResponse: NetworkStatsResponse) = viewModelScope.launch {
+        when (val result = statsRepository.pushStats(networkStatsResponse)) {
+            is Result.Error -> statsRepository.addStats(networkStatsResponse)
+            is Result.Success -> {
+                result.data.synced = true
+                statsRepository.addStats(result.data)
+            }
+        }
+    }
+
+    fun checkStats() = viewModelScope.launch {
+        statsRepository.getStatsToSync().forEach {
+            updateStats(it)
+        }
     }
 }

@@ -3,13 +3,17 @@ package com.hostel.shoppingcart.data.repositories
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.hostel.shoppingcart.data.Preferences
+import com.hostel.shoppingcart.data.db.ShoppingCartDatabase
 import com.hostel.shoppingcart.data.model.CurrencyConversion
+import com.hostel.shoppingcart.data.model.NetworkStatsResponse
 import com.hostel.shoppingcart.data.network.CurrencyRetroFitService
+import com.hostel.shoppingcart.data.network.StatsRetrofitService
 import com.hostel.shoppingcart.di.scopes.ActivityScope
 import com.hostel.shoppingcart.utils.API_TOKEN
 import com.hostel.shoppingcart.utils.Result
 import com.hostel.shoppingcart.utils.SafeApiRequest
 import com.hostel.shoppingcart.utils.extensions.localizedException
+import okhttp3.ResponseBody
 import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -90,5 +94,7 @@ class CheckoutRepository @Inject constructor(
             Result.Error(e.localizedException)
         }
     }
+
+
 
 }

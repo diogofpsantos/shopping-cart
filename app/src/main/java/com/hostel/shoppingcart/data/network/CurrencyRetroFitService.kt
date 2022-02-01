@@ -1,5 +1,7 @@
 package com.hostel.shoppingcart.data.network
 
+import com.hostel.shoppingcart.data.model.CommonResponse
+import com.hostel.shoppingcart.data.model.NetworkStatsResponse
 import com.hostel.shoppingcart.data.model.RatesResponse
 import retrofit2.Response
 import retrofit2.http.GET
