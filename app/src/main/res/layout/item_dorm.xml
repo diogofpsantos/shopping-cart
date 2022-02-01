@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="dorm"
+            type="com.hostel.shoppingcart.data.model.DormItem" />
+
+        <variable
+            name="currencyFormat"
+            type="java.text.NumberFormat" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/card_backg"
+            android:minHeight="212dp"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{dorm.dorm.name}"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="3 Bed dorms" />
+
+            <LinearLayout
+                android:id="@+id/remove_btn_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="@{dorm.quantity>0}"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/quantity_tv"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/remove_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_btn_remove"
+                    android:enabled="@{dorm.quantity>0}"
+                    tools:enabled="true" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/quantity_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:minWidth="56dp"
+                android:padding="8dp"
+                android:text="@{String.valueOf(dorm.quantity)}"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="0" />
+
+            <LinearLayout
+                android:id="@+id/add_btn_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="@{dorm.dorm.bedsAvailable>dorm.quantity}"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/quantity_tv"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/add_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_btn_add"
+                    android:enabled="@{dorm.dorm.bedsAvailable>dorm.quantity}" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/price_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@{String.format(@string/price_format_bed,currencyFormat.format(dorm.dorm.price))}"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toTopOf="@id/available_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="6€" />
+
+            <TextView
+                android:id="@+id/available_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{String.format(@string/beds_available, dorm.dorm.bedsAvailable)}"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="3 beds available" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</layout>
